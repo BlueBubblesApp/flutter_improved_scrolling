@@ -1,11 +1,11 @@
 name: flutter_improved_scrolling
 description: Attempt to implement better scrolling for Flutter Web and Desktop. Includes keyboard, MButton and custom mouse wheel scrolling.
-version: 0.0.3
+version: 0.0.4
 homepage: https://github.com/adrianflutur/flutter_improved_scrolling
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
-  flutter: ">=1.17.0"
+  sdk: ">=2.14.0 <3.0.0"
+  flutter: ">=2.10.0"
 
 dependencies:
   flutter:

@@ -39,6 +39,7 @@ class ImprovedScrolling extends StatefulWidget {
     required this.scrollController,
     this.enableMMBScrolling = false,
     this.enableKeyboardScrolling = false,
+    this.macosTouchPadScrollDirection = false,
     this.enableCustomMouseWheelScrolling = false,
     this.mmbScrollConfig = const MMBScrollConfig(),
     this.keyboardScrollConfig = const KeyboardScrollConfig(),
@@ -63,6 +64,9 @@ class ImprovedScrolling extends StatefulWidget {
   ///   or
   /// 2. Tap and hold MMB --> Drag MMB --> Release MMB
   final bool enableMMBScrolling;
+
+  /// Reverses the scroll direction for touchpads to replicate macOS scrolling.
+  final bool macosTouchPadScrollDirection;
 
   /// Configuration for middle mouse button scrolling
   final MMBScrollConfig mmbScrollConfig;
@@ -381,6 +385,36 @@ class _ImprovedScrollingState extends State<ImprovedScrolling> {
             _mmbScrollCurrentCursorPosition,
             _mmbScrollCursorActivity,
           );
+        }
+      },
+      onPointerPanZoomUpdate: (PointerPanZoomUpdateEvent event) {
+        final scrollDelta = widget.macosTouchPadScrollDirection == true
+            ? event.panDelta.dy * -1
+            : event.panDelta.dy;
+
+        final newOffset = scrollController.offset +
+            scrollDelta *
+                widget.customMouseWheelScrollConfig.scrollAmountMultiplier;
+
+        final duration = widget.customMouseWheelScrollConfig.scrollDuration;
+        final curve = widget.customMouseWheelScrollConfig.scrollCurve;
+
+        if (scrollDelta.isNegative) {
+          mouseWheelForwardThrottler.run(() {
+            scrollController.animateTo(
+              math.max(0.0, newOffset),
+              duration: duration,
+              curve: curve,
+            );
+          });
+        } else {
+          mouseWheelBackwardThrottler.run(() {
+            scrollController.animateTo(
+              math.min(scrollController.position.maxScrollExtent, newOffset),
+              duration: duration,
+              curve: curve,
+            );
+          });
         }
       },
       onPointerSignal: (event) {
