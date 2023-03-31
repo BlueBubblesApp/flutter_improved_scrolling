@@ -40,6 +40,7 @@ class ImprovedScrolling extends StatefulWidget {
     this.enableMMBScrolling = false,
     this.enableKeyboardScrolling = false,
     this.macosTouchPadScrollDirection = false,
+    this.touchpadScrollAmountMultiplier = 6,
     this.enableCustomMouseWheelScrolling = false,
     this.mmbScrollConfig = const MMBScrollConfig(),
     this.keyboardScrollConfig = const KeyboardScrollConfig(),
@@ -67,6 +68,9 @@ class ImprovedScrolling extends StatefulWidget {
 
   /// Reverses the scroll direction for touchpads to replicate macOS scrolling.
   final bool macosTouchPadScrollDirection;
+
+  /// Scroll amount multiplier for touchpads
+  final int touchpadScrollAmountMultiplier;
 
   /// Configuration for middle mouse button scrolling
   final MMBScrollConfig mmbScrollConfig;
@@ -394,7 +398,7 @@ class _ImprovedScrollingState extends State<ImprovedScrolling> {
 
         final newOffset = scrollController.offset +
             scrollDelta *
-                widget.customMouseWheelScrollConfig.scrollAmountMultiplier;
+                widget.touchpadScrollAmountMultiplier;
 
         final duration = widget.customMouseWheelScrollConfig.scrollDuration;
         final curve = widget.customMouseWheelScrollConfig.scrollCurve;
